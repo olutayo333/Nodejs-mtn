@@ -1,0 +1,39 @@
+const mongoose = require("mongoose") 
+const bcryptjs = require("bcryptjs"); const bcrypt = require("bcryptjs/dist/bcrypt");
+
+let adminSchema= mongoose.Schema({
+    name:{type: String, required:true },
+    phonenumber:{type: String, required:true, unique:true },
+    email:{type: String, required:true, unique:true},
+    password:{type:String, required:true },
+    registrationDate:{type:Date, default:Date.now()},
+}) 
+
+//PASSWORD HASHING
+let saltRound=10;
+adminSchema.pre("save", function(next){
+    console.log(this.password)
+    // bcrypt.hash(password,saltRound,callback)
+    bcryptjs.hash(this.password,saltRound,(err,hashedPassword)=>{
+        console.log(hashedPassword)
+       if(err){console.log("password could not hash" + err)}
+       else{ 
+        this.password = hashedPassword
+        next()}  
+    })     
+})
+
+//PASSWORD UNHASHING
+adminSchema.methods.validatePassword = function(password,callback){
+    bcrypt.compare(password, this.password, (err, same)=>{
+        console.log(same);
+        if(!err){
+            callback(err,same)
+        }
+        else{next()}
+    })
+}
+
+
+let adminModel = mongoose.model("adminTable", adminSchema)
+module.exports = adminModel
