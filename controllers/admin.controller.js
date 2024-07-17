@@ -84,18 +84,17 @@ const adminSignin = (req, res)=>{
 }
 
 const deleteuser = (req, res)=>{
-    let taskID = req.body._id; console.log(req.body);
-    userModel.findOneAndDelete({_id:taskID})
+    let userID = req.body.id; console.log(req.body);
+    userModel.findOneAndDelete({_id:userID})
     .then((result)=>{console.log(result); res.send({status:true, message:"Deleted successfully", result})})
     .catch((err)=>{console.log(err+ "couldnt delete"); res.send({status:false, message:"could not Delete", result})})
 }
 
 const edituser = (req, res)=>{
     console.log(req.body);
-    let name = req.body.name; let department = req.body.department; let taskdetails= req.body.taskdetails;
-    let hoursworked = req.body.hoursworked; let date = req.body.date; let id= req.body.id;
+    let name = req.body.name; let email = req.body.email; let phonenumber= req.body.phonenumber; let id=req.body.id;
 
-    userModel.findOneAndUpdate({_id:id}, {name, department, taskdetails, hoursworked, date})
+    userModel.findOneAndUpdate({_id:id}, {name, email, phonenumber}, {new:true})
     .then((result)=>{
     console.log(result);
     res.send({status:true, message:"Edited Successfully"})
